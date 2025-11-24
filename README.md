@@ -8,7 +8,7 @@ A custom Lovelace card designed for the [VVS Integration](https://github.com/sig
 1.  Ensure you have [HACS](https://hacs.xyz/) installed.
 2.  Go to **HACS** > **Frontend**.
 3.  Click the 3 dots (top right) > **Custom repositories**.
-4.  Add the URL of this repository and select category **Lovelace**.
+4.  Add the URL `https://github.com/sigathi/ha_vvs_card` and select category **Lovelace**.
 5.  Click **Install**.
 6.  Reload your browser resources.
 
