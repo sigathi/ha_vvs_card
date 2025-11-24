@@ -30,7 +30,7 @@ title: "Commute to Work"
 ```
 
 ### Advanced Usage (Clean & Normalized)
-This example shows the full power of the card: merging redundant station names, hiding specific intermediate stops, and handling abbreviations.
+This example shows all options of the card: merging redundant station names, hiding specific intermediate stops, and handling abbreviations.
 ```yaml
 type: custom:vvs-card
 entity: sensor.vvs_stuttgart_to_bad_cannstatt
