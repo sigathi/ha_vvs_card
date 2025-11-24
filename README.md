@@ -27,6 +27,7 @@ Minimal configuration to get started.
 type: custom:vvs-card
 entity: sensor.vvs_stuttgart_hbf_to_esslingen
 title: "Commute to Work"
+```
 
 ### Advanced Usage (Clean & Normalized)
 This example shows the full power of the card: merging redundant station names, hiding specific intermediate stops, and handling abbreviations.
@@ -63,3 +64,4 @@ abbreviations: true
 #    If the user changes lines at the same station, show only one dot.
 #    Default: true
 deduplicate_via: true
+```
