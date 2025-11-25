@@ -1,6 +1,7 @@
 # VVS Card for Home Assistant
 
 A custom Lovelace card designed for the [VVS Integration](https://github.com/sigathi/ha_vvs). It visualizes public transport connections in Stuttgart (VVS) using a clean, responsive "Timeline" style.
+![Card Image](./card.jpg)
 
 ## Installation
 
