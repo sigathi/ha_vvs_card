@@ -47,7 +47,7 @@ title: "Commute to Work"
 This example shows all options of the card:
 ```yaml
 type: custom:vvs-card
-entity: sensor.vvs_stuttgart_to_bad_cannstatt
+entity: sensor.bad_cannstatt_to_olgaeck
 title: "Commute to Work"
 add_delay_to_time: true
 abbreviations: true
