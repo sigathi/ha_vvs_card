@@ -38,6 +38,8 @@ type: custom:vvs-card
 entity: sensor.vvs_stuttgart_to_bad_cannstatt
 title: "Commute to Work"
 add_delay_to_time: true
+abbreviations: true
+deduplicate_via: true
 merge_via:
   - alias: Hauptbf (A.-Klett-Pl.)
     stations:
@@ -47,8 +49,6 @@ merge_via:
       - Stuttgart Hauptbahnhof (tief)
 ignore_via:
   - Some Irrelevant Stop
-abbreviations: true
-deduplicate_via: true
 ```
 
 | Name | Type | Default | Description |
