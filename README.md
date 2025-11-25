@@ -74,11 +74,12 @@ deduplicate_via: true
 add_delay_to_time: true
 ```
 
-Name,Type,Default,Description
-entity,string,Required,"The entity ID of the VVS sensor (e.g., sensor.vvs_stuttgart_to_esslingen)."
-title,string,null,A custom heading displayed at the top of the card.
-add_delay_to_time,boolean,true,"true: Adds delay to the displayed time (e.g., 12:05 in Red) and shows delay info in black.false: Shows scheduled time (12:00 in Black) and delay info in Red."
-abbreviations,boolean / list,true,"true: Enables standard abbreviations (Stuttgart -> Stgt, Hauptbahnhof -> Hbf).false: Disables standard abbreviations.List: Define custom rules (e.g., [{from: 'Wilhelmsplatz', to: 'Pl.'}])."
-deduplicate_via,boolean,true,"If true, prevents the same station from appearing twice in a row on the timeline (exact match)."
-merge_via,list,[],A list of objects to group redundant station names (see structure below). Used to normalize names before deduplication.
-ignore_via,list,[],A list of exact station names to completely hide from the timeline.
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| **`entity`** | string | **Required** | The entity ID of the VVS sensor (e.g., `sensor.vvs_stuttgart_to_esslingen`). |
+| `title` | string | `null` | A custom heading displayed at the top of the card. |
+| `add_delay_to_time`| boolean | `true` | **`true`**: Adds delay to the displayed time (e.g., 12:05 in Red) and shows delay info in black.<br>**`false`**: Shows scheduled time (12:00 in Black) and delay info in Red. |
+| `abbreviations` | boolean / list | `true` | **`true`**: Enables standard abbreviations (Stuttgart -> Stgt, Hauptbahnhof -> Hbf).<br>**`false`**: Disables standard abbreviations.<br>**List**: Define custom rules (e.g., `[{from: 'Wilhelmsplatz', to: 'Pl.'}]`). |
+| `deduplicate_via` | boolean | `true` | If `true`, prevents the same station from appearing twice in a row on the timeline (exact match). |
+| `merge_via` | list | `[]` | A list of objects to group redundant station names. Used to normalize names *before* deduplication (e.g., `{ alias: "Stgt Hbf", stations: ["Stuttgart Hbf (tief)", "Hauptbf (A.-Klett-Pl.)"] }`). |
+| `ignore_via` | list | `[]` | A list of exact station names to completely hide from the timeline. |
