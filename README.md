@@ -31,7 +31,7 @@ entity: sensor.vvs_stuttgart_hbf_to_esslingen
 title: "Commute to Work"
 ```
 
-### Advanced Usage (Clean & Normalized)
+### Advanced Usage
 This example shows all options of the card: merging redundant station names, hiding specific intermediate stops, and handling abbreviations.
 ```yaml
 type: custom:vvs-card
@@ -66,4 +66,19 @@ abbreviations: true
 #    If the user changes lines at the same station, show only one dot.
 #    Default: true
 deduplicate_via: true
+
+# 5. Real-time Delay Calculation:
+#    true:  Display time = Scheduled + Delay (in Red). Delay info is neutral (in brackets).
+#    false: Display time = Scheduled (Black). Delay info is Red (in brackets).
+#    Default: true
+add_delay_to_time: true
 ```
+
+Name,Type,Default,Description
+entity,string,Required,"The entity ID of the VVS sensor (e.g., sensor.vvs_stuttgart_to_esslingen)."
+title,string,null,A custom heading displayed at the top of the card.
+add_delay_to_time,boolean,true,"true: Adds delay to the displayed time (e.g., 12:05 in Red) and shows delay info in black.false: Shows scheduled time (12:00 in Black) and delay info in Red."
+abbreviations,boolean / list,true,"true: Enables standard abbreviations (Stuttgart -> Stgt, Hauptbahnhof -> Hbf).false: Disables standard abbreviations.List: Define custom rules (e.g., [{from: 'Wilhelmsplatz', to: 'Pl.'}])."
+deduplicate_via,boolean,true,"If true, prevents the same station from appearing twice in a row on the timeline (exact match)."
+merge_via,list,[],A list of objects to group redundant station names (see structure below). Used to normalize names before deduplication.
+ignore_via,list,[],A list of exact station names to completely hide from the timeline.
