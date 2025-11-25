@@ -27,7 +27,7 @@ Minimal configuration to get started.
 
 ```yaml
 type: custom:vvs-card
-entity: sensor.vvs_stuttgart_hbf_to_esslingen
+entity: sensor.bad_cannstatt_to_olgaeck
 title: "Commute to Work"
 ```
 
