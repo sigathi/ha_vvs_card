@@ -50,7 +50,7 @@ type: custom:vvs-card
 entity: sensor.bad_cannstatt_to_olgaeck
 title: "Commute to Work"
 add_delay_to_time: true
-abbreviations: true
+abbreviations: false
 deduplicate_via: true
 merge_via:
   - alias: Hauptbf (A.-Klett-Pl.)
@@ -59,6 +59,9 @@ merge_via:
       - Hauptbf (Arnulf-Klett-Platz)
       - Stuttgart Hauptbahnhof (oben)
       - Stuttgart Hauptbahnhof (tief)
+  - alias: Schwabstr.
+    stations:
+      - Schwabstraße
 ignore_via:
   - Some Irrelevant Stop
 ```
