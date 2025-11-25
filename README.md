@@ -36,42 +36,19 @@ This example shows all options of the card: merging redundant station names, hid
 ```yaml
 type: custom:vvs-card
 entity: sensor.vvs_stuttgart_to_bad_cannstatt
-title: "S-Bahn Connection"
-
-# 1. Merge/Normalize: 
-#    Define groups of stations that are effectively the same stop.
-#    The 'alias' is the name that will be displayed.
-merge_via:
-  - alias: "Bad Cannstatt"
-    stations:
-      - "Bad Cannstatt Wilhelmsplatz"
-      - "Stuttgart Bad Cannstatt"
-  - alias: "Stuttgart Hbf"
-    stations:
-      - "Hauptbf (A.-Klett-Pl.)"
-      - "Stuttgart Hauptbahnhof (oben)"
-      - "Stuttgart Hauptbahnhof (tief)"
-
-# 2. Ignore: 
-#    Completely hide specific stations from the timeline.
-ignore_via:
-  - "Some Irrelevant Stop"
-
-# 3. Abbreviations:
-#    Enable standard abbreviations (Stuttgart -> Stgt, Straße -> Str., etc.)
-#    Default: true
-abbreviations: true
-
-# 4. Deduplication: 
-#    If the user changes lines at the same station, show only one dot.
-#    Default: true
-deduplicate_via: true
-
-# 5. Real-time Delay Calculation:
-#    true:  Display time = Scheduled + Delay (in Red). Delay info is neutral (in brackets).
-#    false: Display time = Scheduled (Black). Delay info is Red (in brackets).
-#    Default: true
+title: "Commute to Work"
 add_delay_to_time: true
+merge_via:
+  - alias: Hauptbf (A.-Klett-Pl.)
+    stations:
+      - Hauptbf (A.-Klett-Pl.)
+      - Hauptbf (Arnulf-Klett-Platz)
+      - Stuttgart Hauptbahnhof (oben)
+      - Stuttgart Hauptbahnhof (tief)
+ignore_via:
+  - Some Irrelevant Stop
+abbreviations: true
+deduplicate_via: true
 ```
 
 | Name | Type | Default | Description |
