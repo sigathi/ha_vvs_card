@@ -56,7 +56,8 @@ class VVSCard extends HTMLElement {
         deduplicate_via: true,
         merge_via: [],
         ignore_via: [],
-        abbreviations: true, // Default: Enable standard abbreviations
+        abbreviations: false, // Default: False (No built-in abbreviations)
+        add_delay_to_time: true,
         ...config
     };
   }
@@ -71,10 +72,10 @@ class VVSCard extends HTMLElement {
     if (transportName === null || transportName === undefined || transportName === "") {
         return "#icon-fussweg";
     }
-    const name = String(transportName);
+    const name = String(transportName).trim();
 
-    if (name.toLowerCase().includes("zacke")) return "#icon-zacke";
-    if (name.toLowerCase().includes("seilbahn")) return "#icon-seilbahn";
+    if (name === "10") return "#icon-zacke";
+    if (name === "20") return "#icon-seilbahn";
 
     if (name.startsWith("S")) return "#icon-sbahn";
     if (name.startsWith("U")) return "#icon-ubahn";
@@ -83,9 +84,31 @@ class VVSCard extends HTMLElement {
     return "#icon-bus";
   }
 
-  renderDelay(delay) {
+  getTransportName(transportName) {
+    if (!transportName) return "";
+    const name = String(transportName).trim();
+    if (name === "10") return "Zacke";
+    if (name === "20") return "SB";
+    return name;
+  }
+
+  addMinutesToTime(timeStr, minutesToAdd) {
+    if (!timeStr || !minutesToAdd) return timeStr;
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes + minutesToAdd);
+
+    const newH = String(date.getHours());
+    const newM = String(date.getMinutes()).padStart(2, '0');
+    return `${newH}:${newM}`;
+  }
+
+  renderDelay(delay, isRealTime) {
     if (!delay || delay === 0) return "";
-    return `<span class="delay">+${delay}'</span>`;
+    const text = `(+${delay}')`;
+    const className = isRealTime ? "delay-neutral" : "delay-warning";
+    return `<span class="${className}">${text}</span>`;
   }
 
   formatDuration(minutes) {
@@ -98,8 +121,8 @@ class VVSCard extends HTMLElement {
     if (!name) return "";
     let n = String(name);
 
-    // Apply standard abbreviations only if enabled
-    if (this.config.abbreviations !== false) {
+    // Apply built-in abbreviations if enabled
+    if (this.config.abbreviations === true) {
         n = n.replace('Stuttgart', 'Stgt');
         n = n.replace('Hauptbahnhof', 'Hbf');
         n = n.replace('Bahnhof', 'Bhf');
@@ -111,7 +134,7 @@ class VVSCard extends HTMLElement {
         n = n.trim();
     }
 
-    // Truncation (always active to prevent layout break)
+    // Truncation logic (ALWAYS applies to save layout)
     if (n.length > charLimit) {
       return n.substring(0, charLimit - 2) + "..";
     }
@@ -120,12 +143,9 @@ class VVSCard extends HTMLElement {
 
   processViaStops(rawVia) {
     if (!rawVia || rawVia.length === 0) return [];
-
     let stops = rawVia.slice(0, -1).map(s => String(s).trim());
-
     if (stops.length === 0) return [];
 
-    // 1. Merge / Normalization Logic
     if (this.config.merge_via && Array.isArray(this.config.merge_via)) {
         stops = stops.map(stopName => {
             for (const group of this.config.merge_via) {
@@ -139,14 +159,12 @@ class VVSCard extends HTMLElement {
         });
     }
 
-    // 2. Deduplication (Strict Exact Match)
     if (this.config.deduplicate_via !== false) {
         stops = stops.filter((item, pos, arr) => {
             return pos === 0 || item !== arr[pos - 1];
         });
     }
 
-    // 3. Ignore Logic
     if (this.config.ignore_via && Array.isArray(this.config.ignore_via)) {
         stops = stops.filter(stop => !this.config.ignore_via.includes(stop));
     }
@@ -159,6 +177,7 @@ class VVSCard extends HTMLElement {
 
     const currentWidth = this._width || 350;
     const availableTimelineWidth = currentWidth - 120;
+    const useRealTime = this.config.add_delay_to_time !== false;
 
     const headingHTML = this.config.title
         ? `<div class="card-header">${this.config.title}</div>`
@@ -170,9 +189,27 @@ class VVSCard extends HTMLElement {
         transportHTML = trip.transports.map(t => `
           <div class="transport-item">
             <svg class="icon"><use xlink:href="${this.getIcon(t)}"></use></svg>
-            <span class="transport-number">${t || ''}</span>
+            <span class="transport-number">${this.getTransportName(t)}</span>
           </div>
         `).join("");
+      }
+
+      const depDelay = trip.departure_delay || 0;
+      const arrDelay = trip.arrival_delay || 0;
+
+      let depTime = trip.departure;
+      let arrTime = trip.arrival;
+
+      let depClass = "time";
+      let arrClass = "time";
+
+      if (useRealTime && depDelay !== 0) {
+          depTime = this.addMinutesToTime(trip.departure, depDelay);
+          depClass += " delayed-time";
+      }
+      if (useRealTime && arrDelay !== 0) {
+          arrTime = this.addMinutesToTime(trip.arrival, arrDelay);
+          arrClass += " delayed-time";
       }
 
       const viaStops = this.processViaStops(trip.via);
@@ -201,8 +238,8 @@ class VVSCard extends HTMLElement {
 
           <div class="timeline-container">
             <div class="time-left">
-              <div class="time">${trip.departure}</div>
-              <div class="delay-container">${this.renderDelay(trip.departure_delay)}</div>
+              <div class="${depClass}">${depTime}</div>
+              <div class="delay-container">${this.renderDelay(depDelay, useRealTime)}</div>
             </div>
 
             <div class="timeline-graphic">
@@ -213,8 +250,8 @@ class VVSCard extends HTMLElement {
             </div>
 
             <div class="time-right">
-              <div class="time">${trip.arrival}</div>
-              <div class="delay-container">${this.renderDelay(trip.arrival_delay)}</div>
+              <div class="${arrClass}">${arrTime}</div>
+              <div class="delay-container">${this.renderDelay(arrDelay, useRealTime)}</div>
             </div>
           </div>
 
@@ -244,8 +281,17 @@ class VVSCard extends HTMLElement {
         color: var(--primary-text-color);
       }
 
-      .vvs-trip { margin-bottom: 12px; font-family: Roboto, sans-serif; }
-      .vvs-trip:last-child { margin-bottom: 0; }
+      .vvs-trip {
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--divider-color, #e0e0e0);
+        font-family: Roboto, sans-serif;
+      }
+      .vvs-trip:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
 
       .trip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0px; }
       .transports { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -255,10 +301,20 @@ class VVSCard extends HTMLElement {
 
       .timeline-container { display: flex; align-items: center; justify-content: space-between; height: 32px; }
 
-      .time-left, .time-right { display: flex; flex-direction: column; align-items: center; width: 50px; flex-shrink: 0; }
-      .time { font-weight: bold; font-size: 1.1em; }
-      .delay-container { font-size: 0.9em; height: 1em; }
-      .delay { color: #db4437; font-weight: bold; }
+      .time-left, .time-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 50px;
+        flex-shrink: 0;
+        transform: translateY(5px);
+      }
+      .time { font-weight: bold; font-size: 1.1em; color: var(--primary-text-color); }
+      .delayed-time { color: #db4437; }
+
+      .delay-container { font-size: 0.9em; height: 1em; line-height: 1; }
+      .delay-warning { color: #db4437; font-weight: bold; }
+      .delay-neutral { color: var(--secondary-text-color); font-weight: normal; }
 
       .timeline-graphic { flex-grow: 1; position: relative; height: 20px; display: flex; align-items: center; margin: 0 10px; }
       .line { height: 2px; background-color: var(--primary-text-color); width: 100%; }
