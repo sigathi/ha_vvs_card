@@ -2,7 +2,7 @@
 
 A custom Lovelace card designed for the [VVS Integration](https://github.com/sigathi/ha_vvs). It visualizes public transport connections in Stuttgart (VVS) using a clean, responsive "Timeline" style.
 
-![Card Image](./card.png)
+<img src="./card.png" alt="Card image description" width="50%">
 
 ## Installation
 
